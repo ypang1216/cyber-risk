@@ -18,9 +18,49 @@ const baseUrl = import.meta.env.BASE_URL;
 		<link rel="icon" type="image/svg+xml" href={`${baseUrl}/favicon.svg`} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<!-- Force inline CSS styles to ensure Tailwind is included -->
+		
+		<!-- Tailwind CSS CDN as fallback -->
+		<script is:inline>
+			// Check if Tailwind styles are loaded
+			window.addEventListener('DOMContentLoaded', () => {
+				setTimeout(() => {
+					// Simple test to check if basic Tailwind styles are applied
+					const header = document.querySelector('header');
+					const styles = getComputedStyle(header);
+					const hasBackgroundColor = styles.backgroundColor !== 'rgba(0, 0, 0, 0)' && 
+											   styles.backgroundColor !== 'transparent';
+					
+					// If styles aren't applied, load Tailwind from CDN
+					if (!hasBackgroundColor) {
+						console.log('Local Tailwind CSS not detected, loading from CDN as fallback');
+						const link = document.createElement('link');
+						link.rel = 'stylesheet';
+						link.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+						document.head.appendChild(link);
+					}
+				}, 100);
+			});
+		</script>
+		
+		<!-- Inline critical Tailwind styles for immediate rendering -->
 		<style is:inline>
-			/* This empty style block ensures CSS bundling works properly */
+			/* Basic Tailwind utilities needed for initial render */
+			.container { width: 100%; margin-left: auto; margin-right: auto; }
+			.bg-slate-800 { background-color: #1e293b; }
+			.text-white { color: white; }
+			.p-4 { padding: 1rem; }
+			.z-50 { z-index: 50; }
+			.relative { position: relative; }
+			.mx-auto { margin-left: auto; margin-right: auto; }
+			.flex { display: flex; }
+			.justify-between { justify-content: space-between; }
+			.items-center { align-items: center; }
+			.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+			.font-bold { font-weight: 700; }
+			.space-x-6 > * + * { margin-left: 1.5rem; }
+			.hover\:text-blue-300:hover { color: #93c5fd; }
+			.mt-8 { margin-top: 2rem; }
+			.text-center { text-align: center; }
 		</style>
 	</head>
 	<body>

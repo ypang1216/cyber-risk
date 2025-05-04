@@ -14,22 +14,30 @@ rm -rf dist
 echo "Making sure dependencies are up-to-date..."
 npm ci
 
-# Build the project
-echo "Building the Astro site..."
-TAILWIND_MODE=build npm run build
+# Force Tailwind to generate styles in development mode for maximum compatibility
+export NODE_ENV=production
+export TAILWIND_MODE=build
 
-# Verify that CSS was generated correctly
-if [ ! -f dist/assets/*.css ]; then
-  echo "WARNING: No CSS file found in the build output. This could indicate a Tailwind processing issue."
-fi
+# Build the project with maximum compatibility
+echo "Building the Astro site..."
+npm run build
+
+# Debug info - list all assets
+echo "Checking generated files:"
+find dist -type f | sort
+echo "CSS files specifically:"
+find dist -name "*.css" | sort
 
 # Navigate into the build output directory
 cd dist
 
+# Create a local .nojekyll file to prevent GitHub Pages from trying to process with Jekyll
+touch .nojekyll
+
 # Initialize a new Git repository inside the dist folder
 git init
 
-# Set username and email for Git (use your actual GitHub username and email)
+# Set username and email for Git
 git config user.name "GitHub Pages Deployment"
 git config user.email "$(git config user.email)"
 
@@ -39,8 +47,7 @@ git add -A
 # Commit the files
 git commit -m "Deploy to GitHub Pages"
 
-# Set the remote URL to your repository with a special token to authenticate
-# This will push to the gh-pages branch
+# Set the remote URL to your repository
 git remote add origin git@github.com:ypang1216/cyber-risk.git
 
 # Force push to the gh-pages branch (creates it if it doesn't exist)
