@@ -34,9 +34,12 @@ jobs:
       
       - name: Build with Astro
         run: npm run build
+      
+      - name: Debug Build Output
+        run : ls -la dist
 
       - name: Upload Pages artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.1.3
         with:
           name: github-pages
           path: dist
