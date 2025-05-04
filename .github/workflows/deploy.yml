@@ -39,7 +39,7 @@ jobs:
         run : ls -la dist
 
       - name: Upload Pages artifact
-        uses: actions/upload-artifact@v2.1.3
+        uses: actions/upload-artifact@v3
         with:
           name: github-pages
           path: dist
