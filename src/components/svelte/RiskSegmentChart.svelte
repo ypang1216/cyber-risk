@@ -17,10 +17,11 @@
     cloudSecurityRisk: 58
   };
 
-  let mounted = false;
+  // Removed the unnecessary mounted variable
   
   onMount(() => {
-    mounted = true;
+    // This ensures the component is properly initialized on the client
+    console.log('Risk Segment Chart component mounted');
   });
 
   function getColorClass(score) {
