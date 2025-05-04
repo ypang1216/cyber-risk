@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  cyber-risk-app:
+    build:
+      context: .
+      # Use a dev-specific Dockerfile or we can override commands
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4321:4321"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    volumes:
+      # Mount source code for hot reloading
+      - ./src:/app/src
+      - ./public:/app/public
+    # Override the CMD to use dev mode with hot reloading
+    command: npm run dev -- --host 0.0.0.0
+    # Healthcheck for dev environment
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4321"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

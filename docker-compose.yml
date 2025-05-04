@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  cyber-risk-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4321:4321"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # Add healthcheck to ensure service is running properly
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4321"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

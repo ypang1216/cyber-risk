@@ -1,0 +1,190 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RiskSegmentChart from '../components/svelte/RiskSegmentChart.svelte';
+
+// Sample data for the dashboard
+const companyData = {
+    name: "TechStart Inc.",
+    industry: "SaaS / Cloud Services",
+    size: "25-50 employees",
+    dataSensitivity: "High",
+    securityMaturity: "Developing"
+};
+
+const riskScores = {
+    dataBreachRisk: 72,
+    ransomwareExposure: 58,
+    vendorRisk: 65,
+    employeeSecurityRisk: 48,
+    cloudSecurityRisk: 79
+};
+
+// Mock insurance recommendations based on risk profile
+const insuranceRecommendations = [
+    {
+        type: "Cyber Liability",
+        coverage: "$1-2 Million",
+        premium: "$3,500 - $5,200 annually",
+        recommendation: "Strongly Recommended",
+        details: "Covers costs related to data breaches, ransomware attacks, and business interruption due to cyber incidents."
+    },
+    {
+        type: "Technology E&O",
+        coverage: "$1 Million",
+        premium: "$2,800 - $4,000 annually",
+        recommendation: "Recommended",
+        details: "Covers claims arising from errors or omissions in your technology services or products."
+    },
+    {
+        type: "Business Interruption",
+        coverage: "$500,000",
+        premium: "$1,500 - $2,200 annually",
+        recommendation: "Consider",
+        details: "Covers lost revenue during downtime caused by cyber attacks."
+    }
+];
+
+// Security recommendations
+const securityRecommendations = [
+    {
+        priority: "High",
+        action: "Implement Multi-Factor Authentication",
+        impact: "Reduces unauthorized access risk by 99%",
+        effort: "Low"
+    },
+    {
+        priority: "High",
+        action: "Conduct Third-Party Vendor Security Assessment",
+        impact: "Reduces supply chain risk by 60%",
+        effort: "Medium"
+    },
+    {
+        priority: "Medium",
+        action: "Implement Data Loss Prevention (DLP) Solution",
+        impact: "Reduces data leakage risk by 75%",
+        effort: "High"
+    },
+    {
+        priority: "Medium",
+        action: "Employee Security Awareness Training",
+        impact: "Reduces phishing success rate by 90%",
+        effort: "Low"
+    }
+];
+---
+
+<Layout title="Cyber Risk Dashboard">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">Cyber Risk Dashboard</h1>
+        <p class="text-gray-600 mt-2">
+            Analyze and manage your organization's cyber risk profile and get customized insurance recommendations.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Risk visualization section -->
+        <div class="lg:col-span-1">
+            <RiskSegmentChart client:load companyData={companyData} riskScores={riskScores} />
+            
+            <div class="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h3 class="text-lg font-semibold mb-4">Company Risk Profile</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">Industry:</span>
+                        <span class="font-medium">{companyData.industry}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">Size:</span>
+                        <span class="font-medium">{companyData.size}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">Data Sensitivity:</span>
+                        <span class="font-medium">{companyData.dataSensitivity}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">Security Maturity:</span>
+                        <span class="font-medium">{companyData.securityMaturity}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600">Overall Risk Score:</span>
+                        <span class="font-medium text-yellow-600">64/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Insurance recommendations -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4">Insurance Recommendations</h3>
+                <div class="space-y-5">
+                    {insuranceRecommendations.map((item) => (
+                        <div class="border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-medium">{item.type}</h4>
+                                <span class={`text-sm px-3 py-1 rounded-full ${
+                                    item.recommendation === 'Strongly Recommended' 
+                                        ? 'bg-red-100 text-red-800' 
+                                        : item.recommendation === 'Recommended' 
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                    {item.recommendation}
+                                </span>
+                            </div>
+                            <div class="mt-2 grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="text-sm text-gray-500">Coverage</span>
+                                    <p class="text-sm">{item.coverage}</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm text-gray-500">Est. Premium</span>
+                                    <p class="text-sm">{item.premium}</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">{item.details}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            
+            <!-- Security recommendations -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4">Security Recommendations</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recommended Action</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Impact</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Implementation Effort</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {securityRecommendations.map((rec, index) => (
+                                <tr class={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                    <td class="px-4 py-3">
+                                        <span class={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                            rec.priority === 'High' 
+                                                ? 'bg-red-100 text-red-800' 
+                                                : rec.priority === 'Medium'
+                                                ? 'bg-yellow-100 text-yellow-800'
+                                                : 'bg-green-100 text-green-800'
+                                        }`}>
+                                            {rec.priority}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">{rec.action}</td>
+                                    <td class="px-4 py-3 text-sm">{rec.impact}</td>
+                                    <td class="px-4 py-3 text-sm">{rec.effort}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
