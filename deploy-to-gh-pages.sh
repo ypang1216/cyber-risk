@@ -6,9 +6,22 @@ set -e
 # Echo commands for debugging
 set -x
 
+# Clear any previous builds
+echo "Cleaning previous build..."
+rm -rf dist
+
+# Make sure dependencies are installed
+echo "Making sure dependencies are up-to-date..."
+npm ci
+
 # Build the project
 echo "Building the Astro site..."
-npm run build
+TAILWIND_MODE=build npm run build
+
+# Verify that CSS was generated correctly
+if [ ! -f dist/assets/*.css ]; then
+  echo "WARNING: No CSS file found in the build output. This could indicate a Tailwind processing issue."
+fi
 
 # Navigate into the build output directory
 cd dist
